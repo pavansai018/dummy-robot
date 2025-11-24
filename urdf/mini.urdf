@@ -15,6 +15,7 @@
     <xacro:include filename="$(find dummy_robot)/urdf/accessories/rover_dev_payload.urdf" />
     <xacro:include filename="$(find dummy_robot)/urdf/accessories/rplidar_s2.urdf" />
     <xacro:include filename="$(find dummy_robot)/urdf/accessories/imu.urdf" />
+     <xacro:include filename="$(find dummy_robot)/urdf/accessories/camera.urdf" />
 
     <!-- Robot Description -->
     <link name="base_link" />
