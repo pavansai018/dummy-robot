@@ -17,6 +17,7 @@ setup(
         (os.path.join('share', package_name, 'urdf/accessories'), glob(os.path.join('urdf', 'accessories', '*.*'))),
         (os.path.join('share', package_name, 'meshes'), glob(os.path.join('meshes', '*'))),
         (os.path.join('share', package_name, 'worlds'), glob(os.path.join('worlds', '*.*'))),
+        (os.path.join('share', package_name, 'nodes'), glob(os.path.join('nodes', '*.*'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -31,6 +32,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'teleop_buttons = nodes.open_loop_control:main',
         ],
     },
 )
