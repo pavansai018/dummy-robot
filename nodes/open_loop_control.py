@@ -90,14 +90,14 @@ class TeleopButtons(Node):
 
     def move_forward(self):
         """Move robot forward"""
-        self.current_cmd.linear.x = 1.0
+        self.current_cmd.linear.x = 5.0
         self.current_cmd.angular.z = 0.0
         self.publish_cmd()
         self.update_status("Moving FORWARD")
 
     def move_backward(self):
         """Move robot backward"""
-        self.current_cmd.linear.x = -1.0
+        self.current_cmd.linear.x = -5.0
         self.current_cmd.angular.z = 0.0
         self.publish_cmd()
         self.update_status("Moving BACKWARD")
@@ -105,14 +105,14 @@ class TeleopButtons(Node):
     def turn_left(self):
         """Turn robot left (in place)"""
         self.current_cmd.linear.x = 0.0
-        self.current_cmd.angular.z = 1.0
+        self.current_cmd.angular.z = 4.0
         self.publish_cmd()
         self.update_status("Turning LEFT")
 
     def turn_right(self):
         """Turn robot right (in place)"""
         self.current_cmd.linear.x = 0.0
-        self.current_cmd.angular.z = -1.0
+        self.current_cmd.angular.z = -4.0
         self.publish_cmd()
         self.update_status("Turning RIGHT")
 
