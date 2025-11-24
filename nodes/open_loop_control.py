@@ -12,26 +12,58 @@ class TeleopButtons(Node):
         # Publisher for cmd_vel
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         
+        # Current velocities (adjustable via sliders)
+        self.linear_velocity = 1.0
+        self.angular_velocity = 1.0
+        
         # Create GUI
         self.create_gui()
         
         self.get_logger().info('Teleop Buttons GUI started')
 
     def create_gui(self):
-        """Create the button GUI"""
+        """Create the button GUI with sliders"""
         self.root = tk.Tk()
         self.root.title("Dummy Robot Teleoperation")
-        self.root.geometry("500x500")
+        self.root.geometry("600x600")
         self.root.resizable(True, True)
         
         # Configure style
         style = ttk.Style()
         style.configure('TButton', font=('Arial', 12), padding=10)
         
+        # Velocity Control Frame
+        control_frame = ttk.LabelFrame(self.root, text="Velocity Control", padding=10)
+        control_frame.place(relx=0.5, rely=0.05, anchor='n', width=500, height=120)
+        
+        # Linear Velocity Slider
+        ttk.Label(control_frame, text="Linear Velocity:").grid(row=0, column=0, sticky='w', padx=5)
+        self.linear_slider = ttk.Scale(control_frame, from_=0.1, to=5.0, orient='horizontal', 
+                                      command=self.update_linear_velocity)
+        self.linear_slider.set(self.linear_velocity)
+        self.linear_slider.grid(row=0, column=1, sticky='ew', padx=5)
+        self.linear_label = ttk.Label(control_frame, text=f"{self.linear_velocity:.1f} m/s")
+        self.linear_label.grid(row=0, column=2, padx=5)
+        
+        # Angular Velocity Slider
+        ttk.Label(control_frame, text="Angular Velocity:").grid(row=1, column=0, sticky='w', padx=5)
+        self.angular_slider = ttk.Scale(control_frame, from_=0.1, to=4.0, orient='horizontal', 
+                                       command=self.update_angular_velocity)
+        self.angular_slider.set(self.angular_velocity)
+        self.angular_slider.grid(row=1, column=1, sticky='ew', padx=5)
+        self.angular_label = ttk.Label(control_frame, text=f"{self.angular_velocity:.1f} rad/s")
+        self.angular_label.grid(row=1, column=2, padx=5)
+        
+        control_frame.columnconfigure(1, weight=1)
+        
+        # Control Buttons Frame
+        button_frame = ttk.Frame(self.root)
+        button_frame.place(relx=0.5, rely=0.3, anchor='n', width=500, height=300)
+        
         # Create buttons in the specified layout
         # Forward button (top)
         self.forward_btn = ttk.Button(
-            self.root, 
+            button_frame, 
             text="FORWARD", 
             command=self.move_forward
         )
@@ -39,7 +71,7 @@ class TeleopButtons(Node):
         
         # Stop button (center)
         self.stop_btn = ttk.Button(
-            self.root, 
+            button_frame, 
             text="STOP", 
             command=self.stop,
             style='Emergency.TButton'
@@ -49,7 +81,7 @@ class TeleopButtons(Node):
         
         # Backward button (bottom)
         self.backward_btn = ttk.Button(
-            self.root, 
+            button_frame, 
             text="BACKWARD", 
             command=self.move_backward
         )
@@ -57,7 +89,7 @@ class TeleopButtons(Node):
         
         # Left button (left of stop)
         self.left_btn = ttk.Button(
-            self.root, 
+            button_frame, 
             text="LEFT", 
             command=self.turn_left
         )
@@ -65,7 +97,7 @@ class TeleopButtons(Node):
         
         # Right button (right of stop)
         self.right_btn = ttk.Button(
-            self.root, 
+            button_frame, 
             text="RIGHT", 
             command=self.turn_right
         )
@@ -79,6 +111,14 @@ class TeleopButtons(Node):
         )
         self.status_label.place(relx=0.5, rely=0.95, anchor='center')
         
+        # Current velocities display
+        self.velocity_display = ttk.Label(
+            self.root,
+            text=f"Current: Linear={self.linear_velocity:.1f} m/s, Angular={self.angular_velocity:.1f} rad/s",
+            font=('Arial', 9)
+        )
+        self.velocity_display.place(relx=0.5, rely=0.9, anchor='center')
+        
         # Bind keyboard events
         self.root.bind('<KeyPress>', self.key_press)
         self.root.bind('<KeyRelease>', self.key_release)
@@ -88,16 +128,34 @@ class TeleopButtons(Node):
         self.current_cmd = Twist()
         self.key_pressed = False
 
+    def update_linear_velocity(self, value):
+        """Update linear velocity from slider"""
+        self.linear_velocity = float(value)
+        self.linear_label.config(text=f"{self.linear_velocity:.1f} m/s")
+        self.update_velocity_display()
+
+    def update_angular_velocity(self, value):
+        """Update angular velocity from slider"""
+        self.angular_velocity = float(value)
+        self.angular_label.config(text=f"{self.angular_velocity:.1f} rad/s")
+        self.update_velocity_display()
+
+    def update_velocity_display(self):
+        """Update the current velocities display"""
+        self.velocity_display.config(
+            text=f"Current: Linear={self.linear_velocity:.1f} m/s, Angular={self.angular_velocity:.1f} rad/s"
+        )
+
     def move_forward(self):
         """Move robot forward"""
-        self.current_cmd.linear.x = 5.0
+        self.current_cmd.linear.x = self.linear_velocity
         self.current_cmd.angular.z = 0.0
         self.publish_cmd()
         self.update_status("Moving FORWARD")
 
     def move_backward(self):
         """Move robot backward"""
-        self.current_cmd.linear.x = -5.0
+        self.current_cmd.linear.x = -self.linear_velocity
         self.current_cmd.angular.z = 0.0
         self.publish_cmd()
         self.update_status("Moving BACKWARD")
@@ -105,14 +163,14 @@ class TeleopButtons(Node):
     def turn_left(self):
         """Turn robot left (in place)"""
         self.current_cmd.linear.x = 0.0
-        self.current_cmd.angular.z = 4.0
+        self.current_cmd.angular.z = self.angular_velocity
         self.publish_cmd()
         self.update_status("Turning LEFT")
 
     def turn_right(self):
         """Turn robot right (in place)"""
         self.current_cmd.linear.x = 0.0
-        self.current_cmd.angular.z = -4.0
+        self.current_cmd.angular.z = -self.angular_velocity
         self.publish_cmd()
         self.update_status("Turning RIGHT")
 
