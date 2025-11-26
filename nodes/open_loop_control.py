@@ -3,7 +3,11 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 import tkinter as tk
+from cv_bridge import CvBridge
+import cv2
 from tkinter import ttk
+from PIL import Image as PILImage, ImageTk
+from sensor_msgs.msg import Image
 
 class TeleopButtons(Node):
     def __init__(self):
@@ -15,7 +19,20 @@ class TeleopButtons(Node):
         # Current velocities (adjustable via sliders)
         self.linear_velocity = 1.0
         self.angular_velocity = 1.0
-        
+        self.bridge = CvBridge()
+        self.image_sub = self.create_subscription(
+            Image,
+            '/camera',   
+            self.image_callback,
+            10
+        )
+
+        # Camera-related attributes
+        self.camera_label = None
+        # must keep a reference or Tk will garbage-collect
+        self.camera_photo = None  
+        self.camera_width = 700
+        self.camera_height = 260
         # Create GUI
         self.create_gui()
         
@@ -25,7 +42,7 @@ class TeleopButtons(Node):
         """Create the button GUI with sliders"""
         self.root = tk.Tk()
         self.root.title("Dummy Robot Teleoperation")
-        self.root.geometry("600x600")
+        self.root.geometry("800x700")
         self.root.resizable(True, True)
         
         # Configure style
@@ -58,7 +75,7 @@ class TeleopButtons(Node):
         
         # Control Buttons Frame
         button_frame = ttk.Frame(self.root)
-        button_frame.place(relx=0.5, rely=0.3, anchor='n', width=500, height=300)
+        button_frame.place(relx=0.5, rely=0.2, anchor='n', width=500, height=300)
         
         # Create buttons in the specified layout
         # Forward button (top)
@@ -110,7 +127,12 @@ class TeleopButtons(Node):
             font=('Arial', 10)
         )
         self.status_label.place(relx=0.5, rely=0.95, anchor='center')
-        
+        # Camera frame
+        camera_frame = ttk.LabelFrame(self.root, text="Camera View", padding=5)
+        camera_frame.place(relx=0.5, rely=0.62, anchor='n', width=700, height=260)
+
+        self.camera_label = ttk.Label(camera_frame, text="Waiting for image...")
+        self.camera_label.pack(expand=True, fill='both')
         # Current velocities display
         self.velocity_display = ttk.Label(
             self.root,
@@ -127,6 +149,45 @@ class TeleopButtons(Node):
         # Current state
         self.current_cmd = Twist()
         self.key_pressed = False
+
+        # Start periodic ROS spinning so subscription callbacks work
+        self.root.after(10, self.ros_spin_once)
+    
+    def ros_spin_once(self):
+        """Pump ROS2 events periodically from Tkinter loop."""
+        try:
+            rclpy.spin_once(self, timeout_sec=0.0)
+        except Exception as e:
+            self.get_logger().error(f"Error in spin_once: {e}")
+        # schedule next call
+        self.root.after(10, self.ros_spin_once)
+
+
+    def image_callback(self, msg: Image):
+        """ROS2 camera callback: convert and display in Tkinter."""
+        try:
+            # ROS Image -> OpenCV BGR array
+            cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+        except Exception as e:
+            self.get_logger().error(f"cv_bridge error: {e}")
+            return
+
+        h, w, _ = cv_image.shape
+
+        # Resize for GUI
+        cv_image = cv2.resize(cv_image, (self.camera_width, self.camera_height))
+
+        # BGR -> RGB
+        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+
+        # Convert to PIL image, then to ImageTk
+        pil_img = PILImage.fromarray(cv_image)
+        self.camera_photo = ImageTk.PhotoImage(image=pil_img)
+
+        # Update Tkinter label
+        if self.camera_label is not None:
+            self.camera_label.configure(image=self.camera_photo, text="")
+
 
     def update_linear_velocity(self, value):
         """Update linear velocity from slider"""

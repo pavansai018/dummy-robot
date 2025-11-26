@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="line_following">
+
+    <!-- Sun Light (included directly) -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>2 2 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 -0.5 -1</direction>
+    </light>
+
+    <!-- Additional ambient light -->
+    <light type="point" name="ambient_light">
+      <pose>0 0 5 0 0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- Ground Plane with Black Line Track -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        
+        <visual name="white_ground">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.9 0.9 0.9 1</ambient>
+            <diffuse>0.9 0.9 0.9 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+
+        <!-- Circular Track: outer black disk -->
+        <visual name="circular_track_outer">
+          <pose>0 0 0.002 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <!-- Outer radius of the track -->
+              <radius>2.0</radius>
+              <length>0.002</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.05 0.05 0.05 1</ambient>
+            <diffuse>0.05 0.05 0.05 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+
+        <!-- Circular Track: inner white disk to "cut out" the center -->
+        <visual name="circular_track_inner">
+          <!-- Slightly above outer disk so it visually covers the center -->
+          <pose>0 0 0.0025 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <!-- Inner radius (controls track thickness). Slightly smaller than outer radius -->
+              <radius>1.8</radius>
+              <length>0.003</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <!-- Match ground color so it looks like a ring -->
+            <ambient>0.9 0.9 0.9 1</ambient>
+            <diffuse>0.9 0.9 0.9 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+
+
+      
+      </link>
+    </model>
+
+  
+
+    <!-- Physics engine -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <gravity>0 0 -9.8</gravity>
+
+  </world>
+</sdf>
