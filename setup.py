@@ -33,6 +33,8 @@ setup(
     entry_points={
         'console_scripts': [
             'teleop_buttons = nodes.open_loop_control:main',
+            'line_follower_pid = nodes.line_follower_pid:main',
+            'line_follower_pid_gui = nodes.gui_line_follower_pid:main',
         ],
     },
 )
