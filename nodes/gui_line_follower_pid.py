@@ -178,7 +178,7 @@ class TeleopLineFollower(Node):
 
         # ----------------- Camera View ----------------- #
         camera_frame = ttk.LabelFrame(self.root, text="Camera View", padding=5)
-        camera_frame.place(relx=0.5, rely=0.63, anchor='n', width=820, height=260)
+        camera_frame.place(relx=0.5, rely=0.63, anchor='n', width=700, height=260)
 
         self.camera_label = ttk.Label(camera_frame, text="Waiting for image...")
         self.camera_label.pack(expand=True, fill='both')
