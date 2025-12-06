@@ -433,7 +433,7 @@ class TeleopLineFollower(Node):
 
     def key_release(self, event):
         self.key_pressed = False
-        if event.keysym in ['Up', Down, 'Left', 'Right']:
+        if event.keysym in ['Up', 'Down,' 'Left', 'Right']:
             self.stop()
 
     # ----------------------------------------------------------------------
