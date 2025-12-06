@@ -1,220 +1,169 @@
-```markdown
-# dummy-robot
+🚀 dummy-robot
 
-A complete simulation of a 4-wheeled robot built using **ROS 2 Jazzy** and **Gazebo Harmonic**, with **GUI control**, **PID** and **LQR** line-following, and ready-to-run launch files.
+4-Wheeled Robot Simulation • ROS 2 Jazzy • Gazebo Harmonic • PID & LQR Line Following • GUI Control
 
-![Robot Simulation](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDQzbnNyazQ5Z2R4MTFya3ppc2J4a293NDNlcG83d3J2Mnd1M25uayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/e9InzRa6woYxxF17dw/giphy.gif)
+A clean, modern simulation framework for experimenting with robot control, optimal feedback (LQR), and classical PID tracking, built on ROS 2 + Gazebo Harmonic.
+Includes a plug-and-play GUI teleop, line-following pipelines, and an easily extendable URDF robot.
 
----
+✨ Key Features
+🛞 Robot Platform
 
-## 🌟 Features
+4-wheeled differential drive robot
 
-- 4-wheeled differential drive robot  
-- URDF and meshes included  
-- GUI-based teleoperation  
-- Black line following on square and circle tracks  
-- PID controller for line following  
-- LQR controller for optimal line following  
-- Gazebo Harmonic simulation integration  
-- Clean ROS 2 package layout  
+URDF + high-quality meshes
 
----
+Tunable wheelbase, radius & sensor configs
 
-## 📦 Package Overview
+🎮 GUI Teleoperation
 
-**Package name:** `dummy_robot`
+Button-based interface for manual driving
 
-### Console Scripts
+Useful for demos, debugging, or testing controllers
 
-| Command                 | Description                    |
-|-------------------------|--------------------------------|
-| `teleop_buttons`        | GUI based teleoperation        |
-| `line_follower_pid`     | Pure PID line follower         |
-| `line_follower_pid_gui` | GUI-based PID line follower    |
-| `line_follower_lqr`     | LQR line follower with GUI     |
+⚫ Line Following
 
-Run any of them with:
+Supports two path shapes:
 
-```bash
-ros2 run dummy_robot <script_name>
-```
+Square track
 
-Examples:
+Circular track
 
-```bash
-ros2 run dummy_robot teleop_buttons
-ros2 run dummy_robot line_follower_pid
-ros2 run dummy_robot line_follower_pid_gui
-ros2 run dummy_robot line_follower_lqr
-```
+Control algorithms:
 
----
+PID Controller (simple & effective)
 
-## 📁 Project Structure
+LQR Controller (optimal for smooth tracking)
 
-```text
+🏗️ Built on Modern ROS 2 Tools
+
+ROS 2 Jazzy middleware
+
+Gazebo Harmonic physics simulation
+
+Colcon workspace support
+
+🧩 System Architecture (High-Level)
++------------------------------+
+|        User / GUI           |
++---------------+--------------+
+                |
+                v
++---------------+--------------+
+|     Control Layer            |
+|  PID Node     |   LQR Node   |
++-------+--------+------+------+
+        |               |
+        v               v
++-------+---------------+------+
+|      Command Mux / Topic     |
++---------------+--------------+
+                |
+                v
++---------------+--------------+
+|    Gazebo Robot Model        |
+|  URDF + Joints + Sensors     |
++---------------+--------------+
+
+🗂 Project Structure
 dummy-robot/
-├── dummy_robot/
-├── launch/
-├── meshes/
-├── nodes/
-├── urdf/
-├── worlds/
+├── dummy_robot/        # Python package modules
+├── nodes/              # PID, LQR, GUI controllers
+├── urdf/               # Robot URDF files
+├── meshes/             # STL/DAE models
+├── worlds/             # Square & circular line worlds
+├── launch/             # ROS 2 launch files
 ├── package.xml
 ├── setup.py
-├── setup.cfg
 └── LICENSE
-```
 
----
+🚀 Installation
 
-## ⚙️ Requirements
-
-- ROS 2 Jazzy  
-- Gazebo Harmonic  
-- Python 3.x  
-- Colcon-based ROS 2 workspace  
-
----
-
-## 🚀 Installation
-
-```bash
 cd ~/ros2_ws/src
 git clone https://github.com/pavansai018/dummy-robot.git
-cd ..
-rosdep install --from-paths src --ignore-src -r -y
-colcon build
+cd ~/ros2_ws
+colcon build --symlink-install
 source install/setup.bash
-```
 
----
 
-## 🏁 Launching the Simulation
+▶️ Launch Simulation
 
-```bash
+Start the robot in Gazebo:
+
 ros2 launch dummy_robot <launch_file>.launch.py
-```
 
-This will:
 
-- Start Gazebo Harmonic  
-- Spawn the 4-wheeled dummy robot  
-- Load a world (square or circular black path) depending on the launch file  
+This will automatically:
 
-![Line following](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzF2cGxnNHBodDdrcG1pbXh6dzd2N2M2NjZpb2YyZzE5cjJ5aTZyMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/EK24qVhF2WOobS7zJc/giphy.gif)
+Load Gazebo Harmonic
 
----
+Spawn the 4-wheeled robot
 
-## 🕹 Teleoperation GUI
+Apply correct controllers
 
-```bash
+Load world (square / circle path)
+
+🎮 Teleoperation GUI
 ros2 run dummy_robot teleop_buttons
-```
 
-This opens a GUI with directional control buttons:
 
-- Forward  
-- Backward  
-- Left  
-- Right  
-- Stop  
+A clean control window appears with:
 
-Useful for testing robot motion before running controllers.
+Forward
 
----
+Left
 
-## ⚫ Line Following
+Right
 
-The robot follows a **black line** path on the floor of the Gazebo world.
+Reverse
 
-### PID Line Follower
+Stop
 
-Non-GUI version:
+Perfect for manual driving and testing topics.
 
-```bash
+⚫ Line Following
+PID Mode
 ros2 run dummy_robot line_follower_pid
-```
+
+
+PID uses:
+
+Cross-track error
+
+Derivative correction
+
+Tunable velocity
 
 GUI version:
 
-```bash
 ros2 run dummy_robot line_follower_pid_gui
-```
 
-PID computes:
-
-- Cross-track error  
-- Derivative error  
-- Steering and velocity commands  
-
-You can tune:
-
-- Kp  
-- Ki  
-- Kd  
-
----
-
-### LQR Line Follower
-
-Run:
-
-```bash
+LQR Mode
 ros2 run dummy_robot line_follower_lqr
-```
 
-LQR:
 
-- Uses a state-feedback model  
-- Minimizes quadratic cost: J = xᵀQx + uᵀRu  
-- Generates optimal control `u = -Kx`  
+LQR provides:
 
-Tune:
+Smoother trajectories
 
-- Q → penalizes state deviation  
-- R → penalizes control effort  
+Minimal control effort
 
----
+Higher stability at high speeds
 
-## 📊 Experiments and Ideas
+Internally uses:
 
-- Compare PID vs LQR tracking performance  
-- Log error vs time, speed, control output  
-- Try circle vs square worlds  
-- Add noise or friction changes  
-- Test higher speed regimes  
-- Create plots and include them in this README  
+State vector: [e_y, e_θ, ė_y, ė_θ]
 
----
+Cost function: xᵀ Q x + uᵀ R u
 
-## 🗺 Roadmap
+📸 Demo Placeholders
 
-- Add RViz2 visualization  
-- Add camera-based line detection  
-- Add MPC controller  
-- Add dynamic obstacles  
-- Add automated plotting utilities  
+(Replace with your own screenshots later)
 
----
+Line Following
 
-## 📜 License
+Robot Model
 
-MIT License  
-See `LICENSE` file.
 
----
+📜 License
 
-## 👤 Author
-
-**Pavan Sai Eshwar Chandra**  
-GitHub: https://github.com/pavansai018
-
----
-
-## 📸 Demo Screenshots (Placeholders)
-
-![Robot icon](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Robot-icon.svg/480px-Robot-icon.svg.png)
-
-![Gazebo logo](https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Gazebo_logo.svg/320px-Gazebo_logo.svg.png)
-```
+Licensed under the MIT License.
