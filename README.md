@@ -1,24 +1,17 @@
-```markdown
-<h1 align="center">dummy-robot</h1>
+# dummy-robot
 
-<p align="center">
-  ROS 2 Jazzy · Gazebo Harmonic · PID & LQR Controllers · Line Following Simulation
-</p>
-
-<p align="center">
-  A compact 4-wheeled robot simulation with modular controllers and GUI teleoperation.
-</p>
+A 4-wheeled robot simulation built using ROS 2 Jazzy and Gazebo Harmonic.  
+Includes PID and LQR controllers for line following and a GUI tool for manual teleoperation.
 
 ---
 
 ## Features
 
-- Differential-drive 4-wheel robot  
-- URDF robot model  
-- Gazebo Harmonic simulation (square / circle tracks)  
+- Differential-drive robot with clean URDF model  
+- Gazebo Harmonic simulation worlds (square and circular tracks)  
 - PID and LQR line-following controllers  
-- GUI teleoperation for manual control  
-- Clean ROS 2 package layout  
+- GUI teleoperation  
+- Compact and modular ROS 2 package  
 
 ---
 
@@ -27,9 +20,9 @@
 ```
 dummy-robot/
 ├── dummy_robot/        # Python package
-├── nodes/              # PID, LQR, GUI nodes
+├── nodes/              # Controller + GUI nodes
 ├── urdf/               # Robot description
-├── meshes/             # Geometry
+├── meshes/             # Geometry files
 ├── worlds/             # Gazebo worlds
 ├── launch/             # Launch files
 ├── package.xml
@@ -40,9 +33,14 @@ dummy-robot/
 
 ## Installation
 
-```bash
+```
 cd ~/ros2_ws/src
 git clone https://github.com/pavansai018/dummy-robot.git
+```
+
+Build:
+
+```
 cd ~/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
@@ -52,24 +50,25 @@ source install/setup.bash
 
 ## Launch Simulation
 
-```bash
+```
 ros2 launch dummy_robot <launch_file>.launch.py
 ```
 
 Loads:
+
 - Gazebo Harmonic  
 - Robot model  
-- World (square or circular track)
+- Selected world (square or circular track)  
 
 ---
 
 ## Teleoperation
 
-```bash
+```
 ros2 run dummy_robot teleop_buttons
 ```
 
-Manual GUI driving tool.
+Simple GUI for testing robot motion.
 
 ---
 
@@ -77,50 +76,50 @@ Manual GUI driving tool.
 
 ### PID Controller
 
-```bash
+```
 ros2 run dummy_robot line_follower_pid
 ```
 
 GUI version:
 
-```bash
+```
 ros2 run dummy_robot line_follower_pid_gui
 ```
 
 ### LQR Controller
 
-```bash
+```
 ros2 run dummy_robot line_follower_lqr
 ```
 
-State-feedback optimal control using Q/R matrices.
+Implements optimal state-feedback tracking.
 
 ---
 
 ## System Overview
 
 ```
-GUI Teleop     →  /cmd_vel  → Gazebo Robot
+GUI → /cmd_vel → Gazebo Robot
 
-Line Detector → PID  → /
-                      → Command Mux → Robot
-Line Detector → LQR  → \
+Line Detector → PID → /
+                     → Command Mux → Robot
+Line Detector → LQR → \
 ```
 
 ---
 
 ## Roadmap
 
-- Add camera-based line detection  
-- Add MPC controller  
-- Add RViz2 visualization  
-- Add logging & plotting utilities  
+- Camera-based line detection  
+- MPC controller  
+- RViz visualization  
+- Logging and plotting tools  
 
 ---
 
 ## License
 
-MIT License
+MIT License.
 
 ---
 
@@ -128,4 +127,3 @@ MIT License
 
 Pavan Sai Eshwar Chandra  
 https://github.com/pavansai018
-```
