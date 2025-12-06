@@ -1,99 +1,131 @@
-dummy-robot
+```markdown
+<h1 align="center">dummy-robot</h1>
 
-A clean, modular 4-wheeled robot simulation framework built on ROS 2 Jazzy and Gazebo Harmonic, featuring PID and LQR line-following controllers and a GUI teleoperation tool.
-Engineered for experimentation, benchmarking, and robotics portfolio demonstration.
+<p align="center">
+  ROS 2 Jazzy · Gazebo Harmonic · PID & LQR Controllers · Line Following Simulation
+</p>
 
-📘 Overview
+<p align="center">
+  A compact 4-wheeled robot simulation with modular controllers and GUI teleoperation.
+</p>
 
-dummy-robot provides:
+---
 
-A differential-drive robot model (URDF + meshes)
+## Features
 
-Ready-to-use Gazebo Harmonic worlds (square & circular tracks)
+- Differential-drive 4-wheel robot  
+- URDF robot model  
+- Gazebo Harmonic simulation (square / circle tracks)  
+- PID and LQR line-following controllers  
+- GUI teleoperation for manual control  
+- Clean ROS 2 package layout  
 
-GUI teleop for manual control
+---
 
-PID and LQR controllers for black-line following
+## Project Structure
 
-Clean ROS 2 node architecture
+```
+dummy-robot/
+├── dummy_robot/        # Python package
+├── nodes/              # PID, LQR, GUI nodes
+├── urdf/               # Robot description
+├── meshes/             # Geometry
+├── worlds/             # Gazebo worlds
+├── launch/             # Launch files
+├── package.xml
+└── setup.py
+```
 
-Extendable structure for research and teaching
+---
 
-This repository follows a professional robotics project layout, suitable for real engineering workflows.
+## Installation
 
-🏁 Launching the Simulation
+```bash
+cd ~/ros2_ws/src
+git clone https://github.com/pavansai018/dummy-robot.git
+cd ~/ros2_ws
+colcon build --symlink-install
+source install/setup.bash
+```
 
-Start the robot in Gazebo:
+---
 
+## Launch Simulation
+
+```bash
 ros2 launch dummy_robot <launch_file>.launch.py
+```
 
+Loads:
+- Gazebo Harmonic  
+- Robot model  
+- World (square or circular track)
 
-Each launch file loads:
+---
 
-Gazebo Harmonic
+## Teleoperation
 
-The differential-drive robot
-
-A square / circular line-track world
-
-🎮 GUI Teleoperation
-
-Interactive control interface:
-
+```bash
 ros2 run dummy_robot teleop_buttons
+```
 
+Manual GUI driving tool.
 
-Used for:
+---
 
-Manual driving
+## Line Following
 
-Motion testing
+### PID Controller
 
-Debugging / calibration
-
-⚫ Line-Following Controllers
-PID Controller
-
-Start PID tracking:
-
+```bash
 ros2 run dummy_robot line_follower_pid
+```
 
+GUI version:
 
-GUI-based PID:
-
+```bash
 ros2 run dummy_robot line_follower_pid_gui
+```
 
+### LQR Controller
 
-Features:
-
-Cross-track error calculation
-
-Proportional + derivative stabilization
-
-Tunable velocity
-
-LQR Controller
-
-Start optimal control:
-
+```bash
 ros2 run dummy_robot line_follower_lqr
+```
 
+State-feedback optimal control using Q/R matrices.
 
-Uses:
+---
 
-State vector: lateral offset, heading error, derivatives
+## System Overview
 
-Cost function: xᵀ Q x + uᵀ R u
+```
+GUI Teleop     →  /cmd_vel  → Gazebo Robot
 
-Minimizes tracking error and control effort
+Line Detector → PID  → /
+                      → Command Mux → Robot
+Line Detector → LQR  → \
+```
 
-Produces smoother, stable paths at higher speeds
+---
 
+## Roadmap
 
-📊 Comparing PID vs LQR
-Property	PID	LQR
-Stability	Moderate	High
-Smoothness	Medium	Excellent
-Tuning	Manual (Kp, Ki, Kd)	Systematic (Q/R selection)
-High-speed performance	Limited	Strong
-Optimal control	❌	✅
+- Add camera-based line detection  
+- Add MPC controller  
+- Add RViz2 visualization  
+- Add logging & plotting utilities  
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+Pavan Sai Eshwar Chandra  
+https://github.com/pavansai018
+```
