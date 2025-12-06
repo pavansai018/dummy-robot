@@ -1,7 +1,7 @@
 # dummy-robot
 
 A 4-wheeled robot simulation built using ROS 2 Jazzy and Gazebo Harmonic.  
-Includes PID and LQR controllers for line following and a GUI tool for manual teleoperation.
+Includes PID and LQR controllers for **camera-based line following** and a GUI tool for manual teleoperation.
 
 ---
 
@@ -9,6 +9,7 @@ Includes PID and LQR controllers for line following and a GUI tool for manual te
 
 - Differential-drive robot with clean URDF model  
 - Gazebo Harmonic simulation worlds (square and circular tracks)  
+- **Camera-based black-line tracking**  
 - PID and LQR line-following controllers  
 - GUI teleoperation  
 - Compact and modular ROS 2 package  
@@ -54,11 +55,11 @@ source install/setup.bash
 ros2 launch dummy_robot <launch_file>.launch.py
 ```
 
-Loads:
+This loads:
 
 - Gazebo Harmonic  
 - Robot model  
-- Selected world (square or circular track)  
+- The selected world (square or circular black line)  
 
 ---
 
@@ -68,7 +69,7 @@ Loads:
 ros2 run dummy_robot teleop_buttons
 ```
 
-Simple GUI for testing robot motion.
+Manual GUI for testing robot motion.
 
 ---
 
@@ -92,28 +93,16 @@ ros2 run dummy_robot line_follower_pid_gui
 ros2 run dummy_robot line_follower_lqr
 ```
 
-Implements optimal state-feedback tracking.
-
----
-
-## System Overview
-
-```
-GUI → /cmd_vel → Gazebo Robot
-
-Line Detector → PID → /
-                     → Command Mux → Robot
-Line Detector → LQR → \
-```
+Uses camera-based line error + optimal state-feedback control.
 
 ---
 
 ## Roadmap
 
-- Camera-based line detection  
-- MPC controller  
-- RViz visualization  
-- Logging and plotting tools  
+- Improve camera thresholding robustness  
+- Add support for dynamic lighting changes  
+- Add RViz visualization  
+- Add logging and plotting tools  
 
 ---
 
