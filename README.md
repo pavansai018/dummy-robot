@@ -93,11 +93,20 @@ GUI version:
 ros2 run dummy_robot line_follower_pid_gui
 ```
 
+
+https://github.com/user-attachments/assets/cfc78ce0-d05a-4980-859e-b5dd3982c99e
+
+
+
 ### LQR Controller
 
 ```
 ros2 run dummy_robot line_follower_lqr
 ```
+
+
+https://github.com/user-attachments/assets/26c996f7-8167-40de-9263-ebf50c618d17
+
 
 Uses camera-based line error + optimal state-feedback control.
 
