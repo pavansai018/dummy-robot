@@ -94,7 +94,7 @@ ros2 run dummy_robot line_follower_pid_gui
 ```
 
 
-https://github.com/user-attachments/assets/cfc78ce0-d05a-4980-859e-b5dd3982c99e
+https://github.com/user-attachments/assets/47b0defe-65cb-4b29-a010-62b724898c79
 
 
 
