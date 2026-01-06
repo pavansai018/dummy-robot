@@ -70,6 +70,8 @@ ros2 run dummy_robot teleop_buttons
 ```
 
 Manual GUI for testing robot motion.
+<video src="./videos/dummy_teleop.mkv" width="600" controls></video>
+
 
 ---
 
