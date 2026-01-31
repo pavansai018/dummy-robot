@@ -59,5 +59,9 @@
             <render_engine>ogre2</render_engine>
         </plugin>
     </gazebo>
-
+    <gazebo>
+    <plugin name="lidar" filename="libgazebo_ros_ray_sensor.so">
+        <output_type>sensor_msgs/LaserScan</output_type>
+    </plugin>
+    </gazebo>
 </robot>
