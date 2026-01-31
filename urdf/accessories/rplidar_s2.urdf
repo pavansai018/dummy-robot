@@ -2,19 +2,25 @@
     
     <link name="lidar_link">
         <visual>
-            <origin xyz="0 0 0" rpy="-1.57 0 3.1415"/>
+            <origin xyz="0 0 0" rpy="0 0 3.1415"/>
+           <!-- <geometry>
+                <mesh filename="file://$(find dummy_robot)/meshes/rplidar_s2.dae"/>
+            </geometry> -->
             <geometry>
-                <mesh filename="file://$(find roverrobotics_description)/meshes/rplidar_s2.dae"/>
+                <cylinder radius="0.02" length="0.02"/>
             </geometry>
         </visual>
 
         <collision>
             <origin xyz="0 0 0" rpy="-1.57 0 3.1415"/>
+           <!-- <geometry>
+                <mesh filename="file://$(find dummy_robot)/meshes/rplidar_s2.dae"/>
+            </geometry> -->
             <geometry>
-                <mesh filename="file://$(find roverrobotics_description)/meshes/rplidar_s2.dae"/>
+                <cylinder radius="0.02" length="0.02"/>
             </geometry>
         </collision>
-
+         <self_collide>false</self_collide>
     </link>
 
     <joint name="lidar_to_payload" type="fixed">
@@ -28,11 +34,11 @@
             <pose>0 0 0 0 0 0</pose>
             <topic>scan</topic>
             <ignition_frame_id>lidar_link</ignition_frame_id>
-            <update_rate>10</update_rate>
+            <update_rate>2</update_rate>
             <lidar>
                 <scan>
                 <horizontal>
-                    <samples>640</samples>
+                    <samples>720</samples>
                     <resolution>1</resolution>
                     <min_angle>-3.14159</min_angle>
                     <max_angle>3.14159</max_angle>
@@ -45,23 +51,24 @@
                 </vertical>
                 </scan>
                 <range>
-                <min>0.15</min>
-                <max>10.0</max>
-                <resolution>0.01</resolution>
+                    <min>0.01</min>
+                    <max>12.0</max>
+                    <resolution>0.005</resolution>
                 </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.001</stddev>
+                </noise>
             </lidar>
+            <always_on>true</always_on>
             <visualize>true</visualize>
         </sensor>
     </gazebo>
 
     <gazebo>    
-        <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
             <render_engine>ogre2</render_engine>
         </plugin>
-    </gazebo>
-    <gazebo>
-    <plugin name="lidar" filename="libgazebo_ros_ray_sensor.so">
-        <output_type>sensor_msgs/LaserScan</output_type>
-    </plugin>
     </gazebo>
 </robot>
