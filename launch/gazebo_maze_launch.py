@@ -1,13 +1,13 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
-
+from launch.event_handlers import OnProcessStart
 
 
 def generate_launch_description():
@@ -30,15 +30,13 @@ def generate_launch_description():
         default_value='maze.sdf',
         description='World file to use in Gazebo')
     
-    gz_world_arg = PathJoinSubstitution([
-        get_package_share_directory('dummy_robot'), 'worlds', world])
-
+    world_file = os.path.join(get_package_share_directory('dummy_robot'), 'worlds', 'maze.sdf')
     # Include the gz sim launch file  
     gz_sim_share = get_package_share_directory("ros_gz_sim")
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(gz_sim_share, "launch", "gz_sim.launch.py")),
         launch_arguments={
-            "gz_args" : gz_world_arg 
+            "gz_args" : f'-r {world_file}' #'-r empty.sdf'
         }.items()
     )
     
@@ -57,9 +55,10 @@ def generate_launch_description():
     gz_ros2_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
+        parameters=[{'use_sim_time': use_sim_time}],
         arguments=[
             "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
-            "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
+            "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
             "/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry",
             "/tf@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V",
             '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
@@ -77,7 +76,8 @@ def generate_launch_description():
             name='robot_state_publisher',
             output='screen',
             parameters=[params],
-            arguments=[])
+            arguments=[]
+            )
 
     slam_toolbox = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
